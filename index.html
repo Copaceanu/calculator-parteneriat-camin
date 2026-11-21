@@ -78,6 +78,7 @@ footer{color:var(--muted);font-size:13px;padding:24px 0 40px}
     <div class="fact"><b>100.000.000 lei</b><span>investiția totală estimată</span></div>
     <div class="fact"><b>~700 locuri</b><span>în aproximativ 350 de camere (estimare)</span></div>
     <div class="fact"><b>11.122 lei</b><span>strânși de la 35 de donatori</span></div>
+    <div class="fact"><b>250.000 lei</b><span>ținta de strângere în 6 luni (ipoteză de concurs)</span></div>
   </div>
   <p class="src">Sursa: <a href="https://fundatia.upb.ro/proiecte-si-evenimente/un-loc-in-camin-poate-schimba-un-destin/" target="_blank" rel="noopener">pagina oficială a campaniei</a>, consultată pe 21.11.2026. Detaliile tehnice pot evolua în timpul proiectării.</p>
 </section>
@@ -133,7 +134,7 @@ footer{color:var(--muted);font-size:13px;padding:24px 0 40px}
   <div class="kpis">
     <div class="kpi"><b id="r-amount"></b><span>contribuția brută propusă</span></div>
     <div class="kpi"><b id="r-net"></b><span id="r-net-label">costul net estimat pentru companie</span></div>
-    <div class="kpi"><b id="r-share"></b><span>din prima etapă (1.250.000 lei)</span><div class="bar"><i id="r-bar"></i></div></div>
+    <div class="kpi"><b id="r-share"></b><span>din ținta campaniei (250.000 lei brut)</span><div class="bar"><i id="r-bar"></i></div></div>
   </div>
   <div id="r-tax" class="msg"></div>
   <p id="r-many"></p>
@@ -189,7 +190,7 @@ footer{color:var(--muted);font-size:13px;padding:24px 0 40px}
 <script>
 const $ = id => document.getElementById(id);
 const fmt = n => Math.round(n).toLocaleString('ro-RO') + ' lei';
-const STAGE1 = 1250000;
+const TARGET = 250000; // ținta de exercițiu a concursului (lei brut, 6 luni)
 
 // Nivelurile sunt propunerea echipei, de validat cu Fundația.
 const TIERS = [
@@ -252,17 +253,17 @@ function calc(e){
     $('r-net-label').textContent='cost (regim fiscal necunoscut)';
   }
 
-  const share = amount/STAGE1*100;
+  const share = amount/TARGET*100;
   $('r-name').textContent = name;
   $('r-tier').textContent = 'Nivel: ' + t.name;
   $('r-amount').textContent = fmt(amount);
   $('r-net').textContent = fmt(net);
   $('r-share').textContent = (share<0.01?'<0,01':share.toLocaleString('ro-RO',{maximumFractionDigits:2})) + '%';
   $('r-bar').style.width = Math.min(100, Math.max(share,0.5)) + '%';
-  const n = Math.ceil(STAGE1/amount);
-  $('r-many').innerHTML = amount>=STAGE1
-    ? '<b>Această sumă acoperă integral prima etapă</b> (proiectare, avize, autorizații). Pentru o asemenea sumă recomandăm o discuție directă cu Fundația.'
-    : `<b>${n.toLocaleString('ro-RO')} companii</b> cu o contribuție ca a dumneavoastră ar acoperi prima etapă: proiectare, avize și autorizații.`;
+  const n = Math.ceil(TARGET/amount);
+  $('r-many').innerHTML = amount>=TARGET
+    ? '<b>Această sumă atinge singură ținta de 250.000 lei.</b> Pentru o asemenea sumă recomandăm o discuție directă cu Fundația.'
+    : `<b>${n.toLocaleString('ro-RO')} companii</b> cu o contribuție ca a dumneavoastră ar atinge ținta campaniei de 250.000 lei.`;
 
   const perks = TIERS.filter(x=>x.min<=t.min).flatMap(x=>x.perks);
   $('r-benefits').innerHTML = perks.map(p=>`<li>${p}</li>`).join('');
