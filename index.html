@@ -303,6 +303,7 @@ $('copy').addEventListener('click', async ()=>{
   setTimeout(()=>$('copy').textContent='Copiază textul', 2000);
 });
 
+if(location.hash==='#exemplu') $('example').click();
 // Auto-verificare a formulei (rezultatul apare în consola browserului)
 console.assert(taxCredit(10000,5e6,80000)===10000, 'credit: suma sub plafon');
 console.assert(taxCredit(50000,5e6,80000)===16000, 'credit: plafonul de 20% din impozit');
