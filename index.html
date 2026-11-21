@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculator Parteneriat Cămin</title>
+<meta name="description" content="Prototip de concurs: o firmă introduce suma și primește în câteva secunde o propunere de parteneriat pentru campania „Un loc în cămin poate schimba un destin!”.">
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#172033;--muted:#5b6478;--line:#e2e6ef;--brand:#1d3a8a;--brand2:#2f5bd3;--ok:#0f7a4f;--okbg:#e6f6ee;--warn:#8a4f00;--warnbg:#fff4e0;--err:#b42318;--errbg:#fdecea;--chip:#eef2ff;--onbrand:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1420;--card:#171e2e;--ink:#e8ecf5;--muted:#a3adc2;--line:#2a3349;--brand:#8fb0ff;--brand2:#6f95ff;--ok:#5fd39c;--okbg:#12291f;--warn:#ffc266;--warnbg:#2c2210;--err:#ff8a80;--errbg:#2e1513;--chip:#1f2a44;--onbrand:#0f1420}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+.demo{background:var(--warnbg);color:var(--warn);font-size:14px;text-align:center;padding:8px 16px;border-bottom:1px solid var(--line)}
+header{padding:28px 0 8px}
+h1{font-size:clamp(26px,5vw,38px);line-height:1.15;margin:0 0 8px;color:var(--brand)}
+h2{font-size:22px;margin:0 0 12px}
+h3{font-size:17px;margin:0 0 6px}
+.lead{color:var(--muted);margin:0 0 16px;max-width:680px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:16px 0}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.fact b{display:block;font-size:22px;color:var(--brand)}
+.fact span{color:var(--muted);font-size:14px}
+.src{font-size:13px;color:var(--muted)}
+a{color:var(--brand2)}
+label{display:block;font-weight:600;margin:14px 0 6px}
+.hint{font-weight:400;color:var(--muted);font-size:13px}
+input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:16px}
+input:focus,select:focus{outline:2px solid var(--brand2);outline-offset:1px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:620px){.row{grid-template-columns:1fr}}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{display:inline-flex;align-items:center;gap:6px;margin:0;font-weight:500;background:var(--chip);padding:8px 12px;border-radius:999px;cursor:pointer}
+.chips input{width:auto}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+button,.btn{appearance:none;border:0;border-radius:10px;padding:12px 18px;font-size:16px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.primary{background:var(--brand2);color:var(--onbrand)}
+.ghost{background:transparent;color:var(--brand2);border:1px solid var(--brand2)}
+.msg{border-radius:10px;padding:12px 14px;margin-top:14px}
+.msg.err{background:var(--errbg);color:var(--err)}
+.msg.warn{background:var(--warnbg);color:var(--warn)}
+.msg.ok{background:var(--okbg);color:var(--ok)}
+.hidden{display:none}
+.tier{display:inline-block;background:var(--brand2);color:var(--onbrand);border-radius:999px;padding:4px 12px;font-weight:700;font-size:14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:14px 0}
+.kpi{border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi b{display:block;font-size:24px}
+.kpi span{color:var(--muted);font-size:14px}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--ok)}
+ul.benefits{padding-left:20px;margin:8px 0}
+ul.benefits li{margin:4px 0}
+.letter{white-space:pre-wrap;background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:16px;font-size:15px}
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.case{border:1px solid var(--line);border-radius:12px;padding:14px}
+.case .who{font-weight:700;color:var(--brand)}
+.case p{margin:6px 0;font-size:15px}
+.tag{font-size:12px;background:var(--chip);border-radius:6px;padding:2px 8px}
+.stat b{font-size:28px;color:var(--ok)}
+footer{color:var(--muted);font-size:13px;padding:24px 0 40px}
+@media print{.demo,.noprint,header .lead,#form-card,#cases,#context,footer{display:none!important}body{background:#fff}.card{border:0}}
+</style>
+</head>
+<body>
+<div class="demo" role="note"><b>Prototip de concurs (AI-Powered Business Challenge 2026).</b> Sumele sunt demonstrative. Nu se fac plăți și nu se trimit date nicăieri. Nu este site-ul oficial al Fundației.</div>
+
+<div class="wrap">
+<header>
+  <h1>Calculatorul de parteneriat pentru noul cămin POLITEHNICA</h1>
+  <p class="lead">Pentru companii: introduceți suma pe care o luați în calcul și primiți în câteva secunde costul real estimat după facilitatea fiscală, beneficiile propuse și o propunere de parteneriat gata de trimis.</p>
+</header>
+
+<section class="card" id="context">
+  <h2>Despre campanie</h2>
+  <p style="margin-top:0">Fundația HIPOLITECH strânge fonduri private pentru un cămin nou, destinat prioritar studenților cu rezultate deosebite și celor care au nevoie de sprijin financiar.</p>
+  <div class="facts">
+    <div class="fact"><b>1.250.000 lei</b><span>prima etapă: proiectare, avize, autorizații</span></div>
+    <div class="fact"><b>100.000.000 lei</b><span>investiția totală estimată</span></div>
+    <div class="fact"><b>~700 locuri</b><span>în aproximativ 350 de camere (estimare)</span></div>
+    <div class="fact"><b>11.122 lei</b><span>strânși de la 35 de donatori</span></div>
+  </div>
+  <p class="src">Sursa: <a href="https://fundatia.upb.ro/proiecte-si-evenimente/un-loc-in-camin-poate-schimba-un-destin/" target="_blank" rel="noopener">pagina oficială a campaniei</a>, consultată pe 21.11.2026. Detaliile tehnice pot evolua în timpul proiectării.</p>
+</section>
+
+<section class="card" id="form-card">
+  <h2>1. Datele companiei <span class="hint">(folosiți date fictive)</span></h2>
+  <form id="f" novalidate>
+    <label for="name">Numele companiei</label>
+    <input id="name" autocomplete="off" placeholder="ex. TehnoNova SRL (fictivă)">
+    <div class="row">
+      <div>
+        <label for="amount">Suma luată în calcul (lei) *</label>
+        <input id="amount" inputmode="numeric" placeholder="ex. 10000">
+      </div>
+      <div>
+        <label for="type">Regimul fiscal al companiei</label>
+        <select id="type">
+          <option value="profit">Plătitoare de impozit pe profit</option>
+          <option value="micro">Microîntreprindere</option>
+          <option value="unknown">Nu știu</option>
+        </select>
+      </div>
+    </div>
+    <div class="row" id="taxfields">
+      <div>
+        <label for="ca">Cifra de afaceri anuală (lei) <span class="hint">opțional</span></label>
+        <input id="ca" inputmode="numeric" placeholder="ex. 5000000">
+      </div>
+      <div>
+        <label for="tax">Impozit pe profit datorat pe an (lei) <span class="hint">opțional</span></label>
+        <input id="tax" inputmode="numeric" placeholder="ex. 80000">
+      </div>
+    </div>
+    <label>Ce urmărește compania? <span class="hint">personalizează propunerea</span></label>
+    <div class="chips">
+      <label><input type="checkbox" name="goal" value="talent"> Recrutare de tineri ingineri</label>
+      <label><input type="checkbox" name="goal" value="brand"> Imagine de brand</label>
+      <label><input type="checkbox" name="goal" value="team"> Implicarea angajaților</label>
+      <label><input type="checkbox" name="goal" value="community"> Comunitatea din București</label>
+    </div>
+    <div class="btns">
+      <button class="primary" type="submit">Calculează propunerea</button>
+      <button class="ghost" type="button" id="example">Completează cu un exemplu</button>
+      <button class="ghost" type="reset" id="reset">Reia</button>
+    </div>
+    <div id="msg" class="msg hidden" role="alert"></div>
+  </form>
+</section>
+
+<section class="card hidden" id="result" aria-live="polite">
+  <h2>2. Rezultatul pentru <span id="r-name"></span></h2>
+  <span class="tier" id="r-tier"></span>
+  <div class="kpis">
+    <div class="kpi"><b id="r-amount"></b><span>contribuția brută propusă</span></div>
+    <div class="kpi"><b id="r-net"></b><span id="r-net-label">costul net estimat pentru companie</span></div>
+    <div class="kpi"><b id="r-share"></b><span>din prima etapă (1.250.000 lei)</span><div class="bar"><i id="r-bar"></i></div></div>
+  </div>
+  <div id="r-tax" class="msg"></div>
+  <p id="r-many"></p>
+  <h3>Beneficii propuse pentru acest nivel</h3>
+  <ul class="benefits" id="r-benefits"></ul>
+  <p class="src">Beneficiile sunt o propunere a echipei, de validat cu Fundația. O contribuție nu cumpără o cameră și nu conferă drepturi de cazare. Este o contribuție la obiectivul comun de finanțare.</p>
+
+  <h3 style="margin-top:20px">3. Propunerea de parteneriat (schiță)</h3>
+  <div class="letter" id="r-letter"></div>
+  <div class="btns noprint">
+    <button class="primary" type="button" id="copy">Copiază textul</button>
+    <button class="ghost" type="button" onclick="print()">Salvează ca PDF</button>
+    <a class="btn ghost" href="https://fundatia.upb.ro/proiecte-si-evenimente/un-loc-in-camin-poate-schimba-un-destin/" target="_blank" rel="noopener">Pagina oficială a campaniei →</a>
+  </div>
+</section>
+
+<section class="card" id="cases">
+  <h2>Ce au obținut alte companii care au investit în POLITEHNICA</h2>
+  <p class="src" style="margin-top:0"><b>Atenție:</b> exemplele de mai jos sunt parteneriate publice ale unor companii cu Universitatea POLITEHNICA București (laboratoare și săli). <b>Nu sunt sponsori ai campaniei căminului.</b> Le arătăm ca dovadă a tipului de beneficii pe care le aduce un astfel de parteneriat.</p>
+  <div class="cases">
+    <div class="case"><div class="who">Bitdefender</div>
+      <p>A investit <b>peste 50.000 €</b> într-un laborator de informatică la Facultatea de Automatică și Calculatoare: 21 de calculatoare, pentru aproximativ 600 de studenți.</p>
+      <p><span class="tag">Ce a câștigat</span> O relație de „partener strategic” cu universitatea (spusă de CEO-ul companiei), stagii de practică pentru studenți și angajați care predau cursuri.</p>
+      <p class="src"><a href="https://www.edupedu.ro/bitdefender-a-investit-peste-50-000-de-euro-in-modernizarea-unui-laborator-de-informatica-de-la-facultatea-de-automatica-universitatea-politehnica-din-bucuresti-reprezinta-un-partener-strate/amp/" target="_blank" rel="noopener">Edupedu, 2022</a></p></div>
+    <div class="case"><div class="who">SAP România</div>
+      <p>În 2024 a <b>redirecționat o parte din impozitul pe profit</b> către o asociație care a renovat și echipat laboratorul SIMfo din UPB.</p>
+      <p><span class="tag">Ce a câștigat</span> Același mecanism fiscal pe care îl calculăm aici, plus apariția în presă și acces pentru studenți la tehnologia SAP prin programul SAP University Alliance.</p>
+      <p class="src"><a href="https://startupcafe.ro/subsidiara-romana-a-colosului-sap-modernizeaza-un-laborator-in-cadrul-universitatii-politehnica-bucuresti-79001" target="_blank" rel="noopener">StartupCafe, 21.03.2025</a></p></div>
+    <div class="case"><div class="who">GlobalLogic (grupul Hitachi)</div>
+      <p>A modernizat <b>5 laboratoare</b> la Automatică și Calculatoare: mobilier, echipamente IT, 10 kituri embedded și burse la un hackathon.</p>
+      <p><span class="tag">Ce a câștigat</span> Contact direct cu viitorii ingineri. Compania speră să-i primească pe studenți „în echipa noastră”.</p>
+      <p class="src"><a href="https://startupcafe.ro/companie-it-grup-hitachi-modernizare-5-laboratoare-politehnica-bucuresti-97833" target="_blank" rel="noopener">StartupCafe, 14.04.2026</a></p></div>
+    <div class="case"><div class="who">DP World România</div>
+      <p>A finanțat renovarea și echiparea <b>a două săli de curs</b> la Facultatea de Transporturi.</p>
+      <p><span class="tag">Ce a câștigat</span> Un parteneriat care urmărește, în cuvintele companiei, recrutarea viitorilor specialiști și stagiile de practică.</p>
+      <p class="src"><a href="https://www.dpworld.com/romania/news/latest-news/dp-world-romania-renoveaza" target="_blank" rel="noopener">DP World, 17.12.2024</a></p></div>
+  </div>
+  <h3 style="margin-top:20px">Ce spun cercetările despre companiile care susțin o cauză</h3>
+  <div class="cases">
+    <div class="case stat"><b>71%</b><p>dintre respondenți ar cumpăra de la o companie cu un scop social, dacă prețul și calitatea sunt egale.</p></div>
+    <div class="case stat"><b>78%</b><p>ar fi mai dispuși să vrea să lucreze pentru o companie care pune pe primul loc un scop social.</p></div>
+    <div class="case stat"><b>78%</b><p>ar ține minte mai ușor o companie cu un scop puternic.</p></div>
+  </div>
+  <p class="src">Sursa: <a href="https://engageforgood.com/porter-novellis-2021-purpose-perception-study/" target="_blank" rel="noopener">Porter Novelli, Purpose Perception Study 2021</a>, sondaj online pe 1.200 de adulți din SUA. Sunt intenții declarate, nu vânzări măsurate. Nu am găsit un studiu românesc comparabil.</p>
+</section>
+
+<footer>
+  Facilitatea fiscală e calculată după regula pentru plătitorii de impozit pe profit: se scade cea mai mică valoare dintre 0,75% din cifra de afaceri și 20% din impozitul pe profit (Codul fiscal, art. 25 alin. 4 lit. i). Condiția: beneficiarul trebuie să fie înscris în Registrul entităților al ANAF la data contractului. Fundația promovează pe pagina oficială varianta „Sponsorizare 20% din impozitul pe profit”. Rezultatul este o estimare, nu consultanță fiscală: verificați cu contabilul companiei.<br><br>
+  Prototip realizat cu ajutorul AI (Claude) și verificat de echipă. Calculul funcționează fără AI, cu reguli fixe, direct în browser.
+</footer>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const fmt = n => Math.round(n).toLocaleString('ro-RO') + ' lei';
+const STAGE1 = 1250000;
+
+// Nivelurile sunt propunerea echipei, de validat cu Fundația.
+const TIERS = [
+  {min:1000,  name:'Susținător',         perks:['Certificat digital de partener al campaniei','Raport trimestrial despre progresul campaniei','Mulțumire publică pe pagina campaniei (cu acordul companiei)']},
+  {min:5000,  name:'Partener',           perks:['Logo-ul companiei pe pagina campaniei','O postare de mulțumire pe rețelele Fundației','Kit media pentru comunicarea companiei (texte și imagini)']},
+  {min:15000, name:'Partener principal', perks:['Prezentarea companiei la o sesiune de carieră pentru studenți','Logo pe materialele evenimentelor campaniei','Invitație la prezentarea proiectului căminului']},
+  {min:50000, name:'Partener fondator',  perks:['Mențiune pe panoul partenerilor fondatori (dacă Fundația aprobă)','Comunicat de presă comun','Întâlnire cu conducerea Fundației']},
+];
+const GOALS = {
+  talent:'Un acces timpuriu la studenți cu rezultate foarte bune, viitori ingineri, prin sesiuni de carieră și stagii.',
+  brand:'O poveste de responsabilitate socială verificabilă, pe care compania o poate comunica public.',
+  team:'Implicarea angajaților: le putem trimite un mesaj intern prin care pot redirecționa 3,5% din impozitul pe venit (formularul 230) către aceeași cauză.',
+  community:'O contribuție vizibilă la comunitatea din București: campusul Regie, Sectorul 6.'
+};
+
+// Întoarce un număr, null dacă lipsește, NaN dacă e invalid. Acceptă „10.000” și „10 000”.
+function num(v){ v = v.trim().replace(/[\s.]/g,'').replace(',', '.'); if(!v) return null; return /^\d+(\.\d+)?$/.test(v) ? +v : NaN; }
+
+// Credit fiscal = min(sumă, 0,75% din cifra de afaceri, 20% din impozitul pe profit)
+function taxCredit(amount, ca, tax){ return Math.min(amount, 0.0075*ca, 0.20*tax); }
+
+function tierFor(a){ let t=null; for(const x of TIERS) if(a>=x.min) t=x; return t; }
+
+function show(kind, html){ const m=$('msg'); m.className='msg '+kind; m.innerHTML=html; }
+
+function calc(e){
+  e && e.preventDefault();
+  const name = $('name').value.trim() || 'compania dumneavoastră';
+  const amount = num($('amount').value), ca = num($('ca').value), tax = num($('tax').value);
+  const type = $('type').value;
+  if(amount===null){ $('result').classList.add('hidden'); show('err','Completați suma luată în calcul. Este singurul câmp obligatoriu.'); $('amount').focus(); return; }
+  if(Number.isNaN(amount) || amount<=0){ $('result').classList.add('hidden'); show('err','Suma trebuie să fie un număr pozitiv, în lei (ex. 10000).'); $('amount').focus(); return; }
+  if(amount<1000){ $('result').classList.add('hidden'); show('warn','Pentru sume sub 1.000 lei, o donație directă este mai simplă decât un contract de sponsorizare. <a href="https://fundatia.upb.ro/vreau-sa-donez/?cauza=camin" target="_blank" rel="noopener">Pagina oficială de donații →</a>'); return; }
+  if(Number.isNaN(ca) || Number.isNaN(tax)){ $('result').classList.add('hidden'); show('err','Cifra de afaceri și impozitul trebuie să fie numere în lei. Le puteți lăsa și goale.'); return; }
+  if(ca!==null && tax!==null && tax>ca){ $('result').classList.add('hidden'); show('err','Impozitul pe profit nu poate fi mai mare decât cifra de afaceri. Verificați valorile.'); return; }
+  $('msg').className='msg hidden';
+
+  const t = tierFor(amount);
+  const goals = [...document.querySelectorAll('input[name=goal]:checked')].map(i=>i.value);
+
+  // Partea fiscală
+  let net = amount, taxBox = $('r-tax'), taxLine = '';
+  if(type==='profit' && ca!==null && tax!==null){
+    const cr = taxCredit(amount, ca, tax); net = amount - cr;
+    taxBox.className='msg ok';
+    taxBox.innerHTML = `Plafonul fiscal estimat: <b>${fmt(Math.min(0.0075*ca,0.2*tax))}</b>, adică minimul dintre 0,75% din cifra de afaceri (${fmt(0.0075*ca)}) și 20% din impozitul pe profit (${fmt(0.2*tax)}). Din contribuție, <b>${fmt(cr)}</b> s-ar putea scădea din impozitul pe profit${amount>cr?'. Partea care depășește plafonul rămâne cost al companiei':''}. Condiția: Fundația să fie înscrisă în Registrul ANAF la data contractului.`;
+    taxLine = `Cu facilitatea fiscală pentru sponsorizare, costul net estimat pentru companie este de ${fmt(net)}, din ${fmt(amount)}.`;
+    $('r-net-label').textContent='costul net estimat pentru companie';
+  } else if(type==='profit'){
+    taxBox.className='msg warn';
+    taxBox.innerHTML='Completați cifra de afaceri și impozitul pe profit ca să estimăm cât se poate scădea din impozit. Fără aceste date afișăm suma întreagă.';
+    $('r-net-label').textContent='cost (lipsesc datele fiscale)';
+  } else if(type==='micro'){
+    taxBox.className='msg warn';
+    taxBox.innerHTML='Din 2024, microîntreprinderile nu mai pot scădea sponsorizările din impozit. Costul net este egal cu suma. Beneficiile de vizibilitate rămân aceleași.';
+    $('r-net-label').textContent='cost pentru companie (fără facilitate)';
+  } else {
+    taxBox.className='msg warn';
+    taxBox.innerHTML='Dacă firma plătește impozit pe profit, o parte din sumă se poate scădea din impozit. Alegeți regimul fiscal pentru o estimare.';
+    $('r-net-label').textContent='cost (regim fiscal necunoscut)';
+  }
+
+  const share = amount/STAGE1*100;
+  $('r-name').textContent = name;
+  $('r-tier').textContent = 'Nivel: ' + t.name;
+  $('r-amount').textContent = fmt(amount);
+  $('r-net').textContent = fmt(net);
+  $('r-share').textContent = (share<0.01?'<0,01':share.toLocaleString('ro-RO',{maximumFractionDigits:2})) + '%';
+  $('r-bar').style.width = Math.min(100, Math.max(share,0.5)) + '%';
+  const n = Math.ceil(STAGE1/amount);
+  $('r-many').innerHTML = amount>=STAGE1
+    ? '<b>Această sumă acoperă integral prima etapă</b> (proiectare, avize, autorizații). Pentru o asemenea sumă recomandăm o discuție directă cu Fundația.'
+    : `<b>${n.toLocaleString('ro-RO')} companii</b> cu o contribuție ca a dumneavoastră ar acoperi prima etapă: proiectare, avize și autorizații.`;
+
+  const perks = TIERS.filter(x=>x.min<=t.min).flatMap(x=>x.perks);
+  $('r-benefits').innerHTML = perks.map(p=>`<li>${p}</li>`).join('');
+
+  const goalText = goals.length ? '\n\nCe câștigă ' + name + ':\n' + goals.map(g=>'• '+GOALS[g]).join('\n') : '';
+  $('r-letter').textContent =
+`Propunere de parteneriat: „Un loc în cămin poate schimba un destin!”
+
+Către: ${name}
+
+Fundația HIPOLITECH strânge fonduri private pentru un cămin studențesc nou al POLITEHNICII București, destinat prioritar studenților cu rezultate deosebite și celor care au nevoie de sprijin financiar. Prima etapă (proiectare, avize și autorizații) are nevoie de 1.250.000 lei.
+
+Propunem un parteneriat de nivel „${t.name}”, printr-o sponsorizare de ${fmt(amount)}, ca o contribuție la obiectivul comun de finanțare.${taxLine?'\n'+taxLine:''}${goalText}
+
+Beneficii propuse:
+${perks.map(p=>'• '+p).join('\n')}
+
+Pasul următor: o discuție de 20 de minute cu echipa Fundației, prin pagina oficială a campaniei.
+
+Notă: estimare demonstrativă, fără valoare de ofertă fermă. Beneficiile se stabilesc prin contractul de sponsorizare. Verificați partea fiscală cu contabilul companiei.`;
+
+  $('result').classList.remove('hidden');
+  $('result').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+$('f').addEventListener('submit', calc);
+$('type').addEventListener('change', ()=> $('taxfields').style.display = $('type').value==='profit' ? '' : 'none');
+$('example').addEventListener('click', ()=>{
+  $('name').value='TehnoNova SRL (firmă fictivă)'; $('amount').value='10000'; $('type').value='profit';
+  $('ca').value='5000000'; $('tax').value='80000'; $('taxfields').style.display='';
+  document.querySelectorAll('input[name=goal]').forEach(i=>i.checked = i.value==='talent' || i.value==='brand');
+  calc();
+});
+$('reset').addEventListener('click', ()=>{ $('result').classList.add('hidden'); $('msg').className='msg hidden'; $('taxfields').style.display=''; });
+$('copy').addEventListener('click', async ()=>{
+  try{ await navigator.clipboard.writeText($('r-letter').textContent); $('copy').textContent='Copiat ✓'; }
+  catch{ $('copy').textContent='Selectați textul manual'; }
+  setTimeout(()=>$('copy').textContent='Copiază textul', 2000);
+});
+
+// Auto-verificare a formulei (rezultatul apare în consola browserului)
+console.assert(taxCredit(10000,5e6,80000)===10000, 'credit: suma sub plafon');
+console.assert(taxCredit(50000,5e6,80000)===16000, 'credit: plafonul de 20% din impozit');
+console.assert(taxCredit(50000,1e6,500000)===7500, 'credit: plafonul de 0,75% din CA');
+console.assert(num('10.000')===10000 && num('')===null && Number.isNaN(num('abc')), 'parsare numere');
+</script>
+</body>
+</html>
